@@ -343,7 +343,8 @@ class ComposerSkillNode extends DecoratorNode<React.ReactElement> {
     key?: NodeKey,
   ) {
     super(key);
-    const normalizedSkillName = skillName.startsWith("$") ? skillName.slice(1) : skillName;
+    const normalizedSkillName =
+      skillName.startsWith("$") || skillName.startsWith("€") ? skillName.slice(1) : skillName;
     this.__skillName = normalizedSkillName;
     this.__skillLabel = skillLabel;
     this.__skillDescription = skillDescription;

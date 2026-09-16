@@ -108,7 +108,7 @@ export function detectComposerTrigger(
       rangeStart: tokenStart,
       rangeEnd: cursor,
     };
-  if (token.startsWith("$")) {
+  if (token.startsWith("$") || token.startsWith("€")) {
     return {
       kind: "skill",
       query: token.slice(1),
