@@ -456,6 +456,13 @@ describe("Cursor skills", () => {
     );
   });
 
+  it("rewrites euro-prefixed skill mentions into Cursor slash invocations", () => {
+    expect(hasCursorSkillMention("please €review this")).toBe(true);
+    expect(rewriteCursorSkillMentions("please €review this", new Set(["review"]))).toBe(
+      "please /review this",
+    );
+  });
+
   it("detects and invokes digit-leading Cursor skills without rewriting money", () => {
     const names = new Set(["2spec", "20k", "100M", "1e6"]);
     // Repeated presence checks must not carry a global-regex cursor.

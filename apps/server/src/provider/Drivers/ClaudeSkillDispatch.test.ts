@@ -43,6 +43,14 @@ describe("planClaudeSkillDispatch", () => {
     });
   });
 
+  it("dispatches a euro-prefixed mention as a trailing slash command", () => {
+    expect(planClaudeSkillDispatch("ok, now €implement all the tickets", SKILLS)).toEqual({
+      leadingText: "ok, now",
+      commandText: "/implement all the tickets",
+      skillName: "implement",
+    });
+  });
+
   it("ignores a dollar token glued to other text", () => {
     expect(planClaudeSkillDispatch("cost is 5$implement", SKILLS)).toBeUndefined();
   });
