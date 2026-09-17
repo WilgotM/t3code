@@ -31,16 +31,20 @@ describe("collectComposerInlineTokens", () => {
     ]);
   });
 
-  it("collects skill names that begin with a digit", () => {
-    expect(collectComposerInlineTokens("Use $2spec next")).toEqual([
+  it.each(["$", "€"])("collects %s skill names that begin with a digit", (prefix) => {
+    expect(collectComposerInlineTokens(`Use ${prefix}2spec next`)).toEqual([
       {
         type: "skill",
         value: "2spec",
-        source: "$2spec",
+        source: `${prefix}2spec`,
         start: 4,
         end: 10,
       },
     ]);
+  });
+
+  it("leaves euro amounts and compact monetary expressions as text", () => {
+    expect(collectComposerInlineTokens("€20 €1_000 €20k €100M €1e6 ")).toEqual([]);
   });
 
   it("leaves digits-only dollar amounts and compact monetary expressions as text", () => {
