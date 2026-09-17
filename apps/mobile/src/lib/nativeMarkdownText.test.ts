@@ -307,13 +307,13 @@ describe("nativeMarkdownDocumentRuns", () => {
     ]);
   });
 
-  it("decorates known skill references as selectable skill links", () => {
+  it.each(["$", "€"])("decorates %s skill references as selectable skill links", (prefix) => {
     const node: MarkdownNode = {
       type: "document",
       children: [
         {
           type: "paragraph",
-          children: [{ type: "text", content: "Use $ui for this." }],
+          children: [{ type: "text", content: `Use ${prefix}ui for this.` }],
         },
       ],
     };
@@ -321,7 +321,7 @@ describe("nativeMarkdownDocumentRuns", () => {
     expect(nativeMarkdownDocumentRuns(node, [{ name: "ui", displayName: "UI" }])).toEqual([
       { text: "Use ", role: "body" },
       {
-        text: "$ui",
+        text: `${prefix}ui`,
         role: "body",
         skillName: "ui",
         skillLabel: "UI",

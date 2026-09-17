@@ -154,6 +154,20 @@ function makeThreadOpenResponse(
 }
 
 describe("buildTurnStartParams", () => {
+  it.effect("sends euro skill aliases in Codex's canonical dollar form", () =>
+    Effect.gen(function* () {
+      const params = yield* buildTurnStartParams({
+        threadId: "provider-thread-1",
+        runtimeMode: "full-access",
+        prompt: "€review €2spec $existing €20 €20k €100M €1e6 5€review €last",
+      });
+
+      NodeAssert.deepEqual(params.input, [
+        { type: "text", text: "$review $2spec $existing €20 €20k €100M €1e6 5€review $last" },
+      ]);
+    }),
+  );
+
   it("keeps invalid turn values only in the schema cause", () => {
     const secret = "codex-turn-input-secret-sentinel";
     const error = Effect.runSync(
