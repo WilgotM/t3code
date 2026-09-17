@@ -154,17 +154,20 @@ function makeThreadOpenResponse(
 }
 
 describe("buildTurnStartParams", () => {
-  it.effect("sends euro skill aliases in Codex's canonical dollar form", () =>
+  it.effect("sends currency skill aliases in Codex's canonical dollar form", () =>
     Effect.gen(function* () {
-      const params = yield* buildTurnStartParams({
-        threadId: "provider-thread-1",
-        runtimeMode: "full-access",
-        prompt: "€review €2spec $existing €20 €20k €100M €1e6 5€review €last",
-      });
+      for (const symbol of ["€", "£", "¥", "₹", "₩", "₿", "𑿝"]) {
+        const prose = `${symbol}20 ${symbol}20k ${symbol}100M ${symbol}1e6 5${symbol}review`;
+        const params = yield* buildTurnStartParams({
+          threadId: "provider-thread-1",
+          runtimeMode: "full-access",
+          prompt: `${symbol}review ${symbol}2spec $existing ${prose} ${symbol}last`,
+        });
 
-      NodeAssert.deepEqual(params.input, [
-        { type: "text", text: "$review $2spec $existing €20 €20k €100M €1e6 5€review $last" },
-      ]);
+        NodeAssert.deepEqual(params.input, [
+          { type: "text", text: `$review $2spec $existing ${prose} $last` },
+        ]);
+      }
     }),
   );
 

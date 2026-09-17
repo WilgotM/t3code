@@ -461,11 +461,20 @@ describe("Cursor skills", () => {
     );
   });
 
-  it("rewrites euro-prefixed skill mentions into Cursor slash invocations", () => {
-    expect(hasCursorSkillMention("please €review this")).toBe(true);
-    expect(rewriteCursorSkillMentions("please €review this", new Set(["review"]))).toBe(
-      "please /review this",
-    );
+  it("rewrites currency-prefixed skill mentions into Cursor slash invocations", () => {
+    const names = new Set(["review", "2spec", "20k", "100M", "1e6"]);
+    for (const symbol of ["€", "£", "¥", "₹", "₩", "₿", "𑿝"]) {
+      expect(hasCursorSkillMention(`please ${symbol}review this`)).toBe(true);
+      expect(hasCursorSkillMention(`please ${symbol}review this`)).toBe(true);
+      expect(rewriteCursorSkillMentions(`${symbol}review then ${symbol}2spec this`, names)).toBe(
+        "/review then /2spec this",
+      );
+      const money = `${symbol}20 ${symbol}20k ${symbol}100M ${symbol}1e6`;
+      expect(hasCursorSkillMention(money)).toBe(false);
+      expect(rewriteCursorSkillMentions(money, names)).toBe(money);
+      const prose = `5${symbol}review ${symbol}unknown`;
+      expect(rewriteCursorSkillMentions(prose, names)).toBe(prose);
+    }
   });
 
   it("detects and invokes digit-leading Cursor skills without rewriting money", () => {
